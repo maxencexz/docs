@@ -61,6 +61,172 @@
                     }
                 }
             }
+        },
+        "/v1/chat/completions": {
+            "post": {
+                "description": "Generates a completion for the provided chat messages using the specified model.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "model": {
+                                        "type": "string",
+                                        "example": "gpt-4"
+                                    },
+                                    "messages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "role": {
+                                                    "type": "string",
+                                                    "enum": ["system", "user", "assistant"],
+                                                    "example": "user"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "What is the capital of France?"
+                                                }
+                                            },
+                                            "required": ["role", "content"]
+                                        }
+                                    }
+                                },
+                                "required": ["model", "messages"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful completion generation.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "created": {
+                                            "type": "integer",
+                                            "example": 1634771200000
+                                        },
+                                        "model": {
+                                            "type": "string",
+                                            "example": "gpt-4"
+                                        },
+                                        "choices": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "index": {
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "message": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "role": {
+                                                                "type": "string",
+                                                                "example": "assistant"
+                                                            },
+                                                            "content": {
+                                                                "type": "string",
+                                                                "example": "The capital of France is Paris."
+                                                            }
+                                                        }
+                                                    },
+                                                    "finish_reason": {
+                                                        "type": "string",
+                                                        "example": "stop"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "usage": {
+                                            "type": "object",
+                                            "properties": {
+                                                "prompt_tokens": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "completion_tokens": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "total_tokens": {
+                                                    "type": "integer",
+                                                    "example": 18
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request due to missing or invalid parameters.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Model not provided."
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "invalid_request_error"
+                                                },
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "model_not_provided"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error while generating completion.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Failed to create a completion for the given model."
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "server_error"
+                                                },
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "chat_completion_failed"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
