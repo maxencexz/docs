@@ -73,7 +73,7 @@
       "group": "Large Language Model",
       "pages": [
         "api-reference/endpoint/get-models",
-        "api-reference/endpoint/create",
+        "api-reference/endpoint/create-completion",
         "api-reference/endpoint/delete"
       ]
     }
