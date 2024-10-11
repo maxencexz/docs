@@ -70,9 +70,9 @@
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Large Language Model",
       "pages": [
-        "api-reference/endpoint/get",
+        "api-reference/endpoint/get-models",
         "api-reference/endpoint/create",
         "api-reference/endpoint/delete"
       ]

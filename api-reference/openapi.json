@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.freejourney.xyz/"
     }
   ],
   "security": [
@@ -19,20 +19,10 @@
     }
   ],
   "paths": {
-    "/plants": {
+    "/v1/models": {
       "get": {
         "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Plant response",
