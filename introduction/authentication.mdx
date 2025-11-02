@@ -1,0 +1,40 @@
+---
+title: "Authentication"
+description: "Learn how to authenticate with the MaxAI API."
+---
+
+To interact with the MaxAI API, you must authenticate your requests using an API key. This key is unique to your account and identifies you when making requests. Each account is limited to a maximum of 5 API keys.
+
+<Danger>Your API keys are sensitive credentials that grant access to your account. Never share them publicly or commit them to version control. Treat them like passwords and store them securely, for example as environment variables.</Danger>
+
+---
+
+### HTTP (REST)
+MaxAI uses a simple HTTP REST API, so there's no need to keep a persistent connection open. All requests must include your API key in the `Authorization` header using the `Bearer` scheme. For requests that send data, set the `Content-Type` header to application/json. The API supports multiple HTTP methods depending on the endpoint.
+
+### Successful responses
+All MaxAI API endpoints follow a consistent JSON response structure, which simplifies handling responses across different parts of your application. When a request is successful, the response will always include a `status` code indicating success, along with a data object. For requests that involve asynchronous processing, such as image or video generation, the `data` object will include a `requestId` that can be used to check the status and retrieve results once they are ready.
+
+```js
+{
+  "status": 200,
+  "data": {
+    "requestId": "6cf4fbf8-a210-4c01-9f84-4c66b89f3d16"
+  }
+}
+```
+
+### Error responses
+If a request encounters an error, the response will also include a `status` code, along with an `error` object that provides detailed information about the problem. This object contains an error code to identify the type of error programmatically, a human-readable message describing what went wrong, a type field categorizing the error (such as a validation or authentication error), and the related param if applicable. Additional details may be included for further context when available.
+```js
+{
+  "error": {
+    "code": "invalid_model",
+    "message": "The specified model does not exist or you do not have access to it.",
+    "type": "validation_error",
+    "param": "model",
+    "details": null
+  },
+  "status": 400
+}
+```

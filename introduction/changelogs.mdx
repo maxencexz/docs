@@ -1,0 +1,21 @@
+---
+title: "Changelogs"
+description: "All notable changes made to the MaxAI platform are documented in this changelog. This includes new features, improvements, bug fixes, and other updates that enhance the user experience."
+---
+
+<Update label="API Update" description="v1.0.2">
+  ## Video Generation – Now in Beta
+
+  Hey developers, video generation is now available on MaxAI! You can create videos directly from text prompts and explore new creative possibilities. Some features, such as logging and NSFW scanning, are still being finalized and will be fully supported in future updates. Pricing starts at **$0.03 for a 5-second video at 480p resolution**.
+
+  ### Documentation
+  - The documentation has been completely rewritten to provide greater detail and improved navigation. It now features an enhanced API reference section, complete with code examples and an interactive playground for testing API calls directly within the documentation.
+
+  ### API
+  * New `POST /videos/generations` endpoint.
+  * New `GET /videos/generations/{requestId}` endpoint.
+  * New `DELETE /videos/generations/{requestId}` endpoint.
+  * Changed the `GET /usage` endpoint to `GET /account/usage`.
+  * Changed the `GET /keys` endpoint to `GET /account/keys`.
+  * Fixed an issue that caused the `X-RateLimit-Reset` header to return incorrect values in some responses.
+</Update>

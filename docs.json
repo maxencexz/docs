@@ -1,13 +1,17 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "willow",
+  "name": "Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#bf5226",
+    "light": "#bf5226",
+    "dark": "#bf5226"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "./favicon.png",
+  "banner": {
+    "content": "Welcome to the new MaxAI documentation. Alongside a comprehensive documentation update, we have launched video generation capabilities and enhanced our image generation models. Refer to the API documentation to begin exploring the platform.",
+    "dismissible": false
+  },
   "navigation": {
     "tabs": [
       {
@@ -15,108 +19,68 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
+            "pages": ["index", "introduction/dashboard", "introduction/authentication", "introduction/rate-limits", "introduction/changelogs"]
           }
         ]
-      },
-      {
+      }, {
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
+            "group": "Images",
+            "pages": ["api-reference/images/create-an-image-generation-request", "api-reference/images/poll-an-image-generation-request", "api-reference/images/cancel-an-image-generation-request"]
+          }, {
+            "group": "Videos",
+            "pages": ["api-reference/videos/create-a-video-generation-request", "api-reference/videos/poll-a-video-generation-request", "api-reference/videos/cancel-a-video-generation-request"]
+          }, {
+            "group": "Utilities",
+            "pages": ["api-reference/utilities/get-account-information", "api-reference/utilities/get-account-usage", "api-reference/utilities/get-api-keys", "api-reference/utilities/delete-an-api-key"]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+  "api": {
+    "mdx": {
+      "server": "https://api.maxai.lol/v1"
+    }
   },
   "navbar": {
     "links": [
       {
+        "label": "API Status",
+        "href": "https://status.maxai.lol"
+      },
+      {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@maxai.lol"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://dashboard.maxai.lol"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "chatgpt",
+      "claude",
+      "copy",
+      "perplexity"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "discord": "https://support.maxai.lol",
+      "website": "https://status.maxai.lol"
+    }
+  },
+  "errors": {
+    "404": {
+      "redirect": true
     }
   }
 }

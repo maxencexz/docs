@@ -1,0 +1,1599 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MaxAI",
+    "description": "",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.maxai.lol/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "AccountResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200,
+            "description": "The HTTP-style status code of the response."
+          },
+          "data": {
+            "type": "object",
+            "description": "The account information object.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "b5ddfe38-6f16-48ab-a735-79e5cab878f0",
+                "description": "The unique account identifier for the user."
+              },
+              "firstName": {
+                "type": "string",
+                "example": "John",
+                "description": "The first name of the account holder."
+              },
+              "lastName": {
+                "type": "string",
+                "example": "Doe",
+                "description": "The last name of the account holder."
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "johndoe@maxai.lol",
+                "description": "The email address associated with the account."
+              },
+              "source": {
+                "type": "string",
+                "enum": [
+                  "google", "github", "discord"
+                ],
+                "example": "google",
+                "description": "The source from which the account was created."
+              },
+              "balance": {
+                "type": "number",
+                "example": 25.94758,
+                "description": "The current balance of the user's account in USD."
+              },
+              "preference": {
+                "type": "object",
+                "properties": {
+                  "lowBalanceAlerts": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Indicates if the user has opted to receive low balance alerts."
+                  },
+                  "newsletters": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Indicates if the user has subscribed to newsletters."
+                  },
+                  "promotionalEmails": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Indicates if the user has opted to receive promotional emails."
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "firstName",
+              "lastName",
+              "email",
+              "balance",
+              "preference"
+            ]
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400,
+            "description": "The HTTP-style status code of the response."
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "unauthorized",
+                "description": "A short string identifying the type of error."
+              },
+              "message": {
+                "type": "string",
+                "example": "Invalid or missing authentication token.",
+                "description": "Human-readable description of the error."
+              },
+              "type": {
+                "type": "string",
+                "example": "authentication_error",
+                "description": "Categorization of the error type."
+              },
+              "param": {
+                "type": "string",
+                "nullable": true,
+                "description": "The parameter related to the error, if applicable."
+              },
+              "details": {
+                "type": "array",
+                "nullable": true,
+                "description": "Optional array of additional details. Each item is an object with the field name as key and error message as value.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "example": "Email format is invalid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 500,
+            "description": "The HTTP-style status code of the response."
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "internal_server_error",
+                "description": "A short string identifying the error."
+              },
+              "message": {
+                "type": "string",
+                "example": "An unexpected error occurred on the server.",
+                "description": "Human-readable description of the server error."
+              },
+              "type": {
+                "type": "string",
+                "example": "authentication_error",
+                "description": "Categorization of the error type."
+              },
+              "param": {
+                "type": "string",
+                "nullable": true,
+                "description": "The parameter related to the error, if applicable."
+              },
+              "details": {
+                "type": "array",
+                "nullable": true,
+                "description": "Optional array of additional details. Each item is an object with the field name as key and error message as value.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "example": "Unexpected null value"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "RateLimitError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 429,
+            "description": "The HTTP-style status code of the response."
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "rate_limit_exceeded",
+                "description": "A short string identifying the error."
+              },
+              "message": {
+                "type": "string",
+                "example": "Rate limit exceeded. Please try again later.",
+                "description": "Human-readable description of the server error."
+              },
+              "type": {
+                "type": "string",
+                "example": "authentication_error",
+                "description": "Categorization of the error type."
+              },
+              "param": {
+                "type": "string",
+                "nullable": true,
+                "description": "The parameter related to the error, if applicable."
+              },
+              "details": {
+                "type": "array",
+                "nullable": true,
+                "description": "Optional array of additional details. Each item is an object with the field name as key and error message as value.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "example": "Unexpected null value"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/account": {
+      "get": {
+        "summary": "Get account information",
+        "description": "Retrieve details about your MaxAI account, including your unique account ID, personal information, account balance, and communication preferences.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The account information was retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/account/keys": {
+      "get": {
+        "summary": "Get account API keys",
+        "description": "Retrieve the API keys associated with your MaxAI account.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API keys retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "The HTTP-style status code of the response."
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Array of API key objects associated with the account.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d236ee0f-462b-4c51-9980-df7406b9e2e9",
+                            "description": "The unique identifier for the API key."
+                          },
+                          "userId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "aa137275-44bf-4a1d-9230-04854ca83861",
+                            "description": "The unique identifier of the user who owns the API key."
+                          },
+                          "partialKey": {
+                            "type": "string",
+                            "example": "ac2309cf",
+                            "description": "The first 8 characters of the API key. The full key is only shown when created on the dashboard."
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Development Key",
+                            "description": "The name assigned to the API key for identification purposes."
+                          },
+                          "description": {
+                            "type": "string",
+                            "example": "A key for development purposes",
+                            "description": "A brief description of the API key's purpose."
+                          },
+                          "expirationDate": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true,
+                            "example": null,
+                            "description": "The date and time when the API key will expire, or null if it does not expire."
+                          },
+                          "permissions": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "example": "retrieve.keys"
+                            },
+                            "description": "Array of permissions granted to the API key."
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-10-23T20:16:10.564Z",
+                            "description": "The date and time when the API key was created."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-10-24T02:03:52.837Z",
+                            "description": "The date and time when the API key was last updated."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "partialKey",
+                          "name",
+                          "permissions",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete the current API key",
+        "description": "Deletes the API key used in the Authorization header. After deletion, this key will no longer be valid for making requests.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API key deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "The HTTP-style status code of the response."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "API key was deleted.",
+                          "description": "Confirmation message indicating the API key has been deleted."
+                        }
+                      },
+                      "required": ["message"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/account/usage": {
+      "get": {
+        "summary": "Get account usage statistics",
+        "description": "Retrieve the usage statistics associated with your MaxAI account, including costs and requests for different time periods.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account usage statistics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "The HTTP-style status code of the response."
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Object containing usage statistics for the account.",
+                      "properties": {
+                        "usage": {
+                          "type": "object",
+                          "description": "Usage statistics broken down by time periods.",
+                          "properties": {
+                            "total": {
+                              "type": "object",
+                              "properties": {
+                                "cost": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total cost incurred during this time period."
+                                },
+                                "requests": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total number of requests made during this time period."
+                                }
+                              }
+                            },
+                            "today": {
+                              "type": "object",
+                              "properties": {
+                                "cost": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total cost incurred today."
+                                },
+                                "requests": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total number of requests made today."
+                                }
+                              }
+                            },
+                            "last7Days": {
+                              "type": "object",
+                              "properties": {
+                                "cost": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total cost incurred over the last 7 days."
+                                },
+                                "requests": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total number of requests made over the last 7 days."
+                                }
+                              }
+                            },
+                            "last30Days": {
+                              "type": "object",
+                              "properties": {
+                                "cost": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total cost incurred over the last 30 days."
+                                },
+                                "requests": {
+                                  "type": "number",
+                                  "example": 0,
+                                  "description": "Total number of requests made over the last 30 days."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/generations": {
+      "post": {
+        "summary": "Submit an image generation request",
+        "description": "Submit a request for image generation. Each account can queue up to 25 concurrent requests. If the limit is exceeded, a 429 Too Many Requests error is returned.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "requestId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "description": "Optional unique UUID v4 for the request. If not provided, a server-generated UUID will be assigned."
+                  },
+                  "model": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "The model to use for image generation. Defaults to 'blackforestlabs@flux.1-schnell'."
+                  },
+                  "safetyLevel": {
+                    "type": "string",
+                    "enum": [
+                      "low", "medium", "high"
+                    ],
+                    "nullable": true,
+                    "description": "Level of content moderation applied to the input prompts and images. Defaults to 'medium'."
+                  },
+                  "scanResults": {
+                    "type": "boolean",
+                    "nullable": true,
+                    "description": "If true, generated images are scanned for NSFW content."
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "positivePrompt", "dimensions"
+                    ],
+                    "properties": {
+                      "positivePrompt": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 3000,
+                        "description": "Text description guiding the image generation."
+                      },
+                      "negativePrompt": {
+                        "type": "string",
+                        "maxLength": 3000,
+                        "nullable": true,
+                        "description": "Text description of elements or styles to avoid. Optional."
+                      },
+                      "seedImage": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional URL or base64/data URI of a seed image."
+                      },
+                      "seedImageStrength": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0,
+                        "nullable": true,
+                        "description": "Influence of seed image on final output. Defaults to 0.5."
+                      }
+                    }
+                  },
+                  "outputQuality": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 99,
+                    "nullable": true,
+                    "description": "Compression quality of the output image. Defaults to 95."
+                  },
+                  "outputType": {
+                    "type": "string",
+                    "enum": [
+                      "url", "base64", "dataURI"
+                    ],
+                    "nullable": true,
+                    "description": "Format returned by the API. Defaults to 'url'."
+                  },
+                  "samples": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20,
+                    "nullable": true,
+                    "description": "Number of images to generate. Defaults to 1."
+                  },
+                  "CFGScale": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 50.0,
+                    "nullable": true,
+                    "description": "Controls how closely the image adheres to the prompt. Defaults to 5."
+                  },
+                  "steps": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50,
+                    "nullable": true,
+                    "description": "Number of inference steps for generation. Defaults to 25."
+                  },
+                  "seed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807,
+                    "nullable": true,
+                    "description": "Random seed for reproducibility. If not provided, a random seed is generated."
+                  },
+                  "scheduler": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Scheduler used during image generation. Defaults to the model's default."
+                  },
+                  "advancedFeatures": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "layerDiffuse": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "Enable LayerDiffuse for FLUX models. Defaults to false."
+                      }
+                    }
+                  },
+                  "dimensions": {
+                    "type": "object",
+                    "required": [
+                      "width", "height"
+                    ],
+                    "properties": {
+                      "width": {
+                        "type": "integer",
+                        "minimum": 12,
+                        "maximum": 2048,
+                        "description": "Width in pixels (multiple of 64). Defaults to 512."
+                      },
+                      "height": {
+                        "type": "integer",
+                        "minimum": 12,
+                        "maximum": 2048,
+                        "description": "Height in pixels (multiple of 64). Defaults to 512."
+                      },
+                      "outpaint": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "top": {
+                            "type": "integer",
+                            "minimum": 64,
+                            "maximum": 1024,
+                            "default": 0
+                          },
+                          "bottom": {
+                            "type": "integer",
+                            "minimum": 64,
+                            "maximum": 1024,
+                            "default": 0
+                          },
+                          "left": {
+                            "type": "integer",
+                            "minimum": 64,
+                            "maximum": 1024,
+                            "default": 0
+                          },
+                          "right": {
+                            "type": "integer",
+                            "minimum": 64,
+                            "maximum": 1024,
+                            "default": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Image generation request successfully received and queued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP-style status code of the response."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "42ebbfe9-80ba-4702-8532-8c73813bd0a8",
+                          "description": "Unique identifier for the submitted image generation request."
+                        }
+                      },
+                      "required": ["requestId"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/generations/{requestId}": {
+      "get": {
+        "summary": "Poll the status of an image generation request",
+        "description": "Retrieve the current status and results of a specific image generation request. Use the `requestId` returned when submitting the generation request.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "description": "The UUID of the image generation request to check.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image generation request status retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["queued", "processing", "succeeded", "failed", "cancelled"]
+                        },
+                        "statusReason": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "safetyLevel": {
+                          "type": "string",
+                          "enum": ["low", "medium", "high"]
+                        },
+                        "input": {
+                          "type": "object",
+                          "properties": {
+                            "positivePrompt": {
+                              "type": "string"
+                            },
+                            "negativePrompt": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "seedImage": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "seedImageStrength": {
+                              "type": "number",
+                              "nullable": true,
+                              "minimum": 0.0,
+                              "maximum": 1.0
+                            }
+                          },
+                          "required": ["positivePrompt"]
+                        },
+                        "outputQuality": {
+                          "type": "number",
+                          "minimum": 1,
+                          "maximum": 99
+                        },
+                        "outputType": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": ["url", "base64", "dataURI"]
+                          }
+                        },
+                        "samples": {
+                          "type": "integer"
+                        },
+                        "seed": {
+                          "type": "integer"
+                        },
+                        "cfgScale": {
+                          "type": "number",
+                          "minimum": 1,
+                          "maximum": 50
+                        },
+                        "steps": {
+                          "type": "integer"
+                        },
+                        "scheduler": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "advancedFeatures": {
+                          "type": "object",
+                          "properties": {
+                            "layerDiffuse": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "dimensions": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "integer"
+                            },
+                            "height": {
+                              "type": "integer"
+                            },
+                            "outpaint": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "integer"
+                                },
+                                "right": {
+                                  "type": "integer"
+                                },
+                                "top": {
+                                  "type": "integer"
+                                },
+                                "bottom": {
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          },
+                          "required": ["width", "height"]
+                        },
+                        "queuedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "cancelledAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "startedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "completedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "cost": {
+                                "type": "number"
+                              },
+                              "isNSFW": {
+                                "type": "boolean"
+                              },
+                              "url": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "base64": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "dataURI": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          }
+                        },
+                        "totalCost": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel an image generation request",
+        "description": "Cancel a specific image generation request that is still in the queued status.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "description": "The UUID of the image generation request to cancel.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The image generation request was successfully cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 204
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "5330695a-d1ea-4a80-b80b-d5f5e33ac3b8"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "cancelled"
+                        }
+                      },
+                      "required": ["id", "status"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/videos/generations": {
+      "post": {
+        "summary": "Submit a video generation request",
+        "description": "Submit a request for video generation. Each account can queue up to 10 concurrent requests. If the limit is exceeded, a 429 Too Many Requests error is returned.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "requestId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "description": "Optional unique UUID v4 for the request. If not provided, a server-generated UUID will be assigned."
+                  },
+                  "model": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "The model to use for video generation. Defaults to 'blackforestlabs@seedance-pro-fast'."
+                  },
+                  "frameImage": {
+                    "type": "string",
+                    "description": "URL or base64/data URI of the image used as the starting point for the video.",
+                    "nullable": true
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "minimum": 3,
+                    "maximum": 12,
+                    "description": "Duration of the video in seconds. Must be between 3 and 12.",
+                    "nullable": false
+                  },
+                  "outputFormat": {
+                    "type": "string",
+                    "enum": [
+                      "mp4", "webm", "mov"
+                    ],
+                    "description": "Format of the returned video. Defaults to 'mp4'.",
+                    "nullable": true
+                  },
+                  "seed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807,
+                    "nullable": true,
+                    "description": "Random seed for reproducibility. If not provided, a random seed is generated."
+                  }
+                },
+                "required": ["duration"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Video generation request successfully received and queued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP-style status code of the response."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "42ebbfe9-80ba-4702-8532-8c73813bd0a8",
+                          "description": "Unique identifier for the submitted video generation request."
+                        }
+                      },
+                      "required": ["requestId"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/videos/generations/{requestId}": {
+      "get": {
+        "summary": "Poll the status of a video generation request",
+        "description": "Retrieve the current status and results of a specific video generation request. Use the `requestId` returned when submitting the generation request.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "description": "The UUID of the image generation request to check.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image generation request status retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["queued", "processing", "succeeded", "failed", "cancelled"]
+                        },
+                        "statusReason": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "safetyLevel": {
+                          "type": "string",
+                          "enum": ["low", "medium", "high"]
+                        },
+                        "input": {
+                          "type": "object",
+                          "properties": {
+                            "positivePrompt": {
+                              "type": "string"
+                            },
+                            "frameImage": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": ["positivePrompt"]
+                        },
+                        "samples": {
+                          "type": "integer"
+                        },
+                        "dimensions": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "integer"
+                            },
+                            "height": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": ["width", "height"]
+                        },
+                        "queuedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "cancelledAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "startedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "completedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "cost": {
+                                "type": "number"
+                              },
+                              "isNSFW": {
+                                "type": "boolean"
+                              },
+                              "url": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          }
+                        },
+                        "totalCost": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel a video generation request",
+        "description": "Cancel a specific video generation request that is still in the queued status.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "description": "The UUID of the video generation request to cancel.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The video generation request was successfully cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number",
+                      "example": 204
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "5330695a-d1ea-4a80-b80b-d5f5e33ac3b8"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "cancelled"
+                        }
+                      },
+                      "required": ["id", "status"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

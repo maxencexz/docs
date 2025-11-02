@@ -1,0 +1,11 @@
+---
+title: 'Create a Video Generation Request'
+openapi: 'POST /videos/generations'
+---
+
+<Warning>
+### Video Generation is a Beta Feature
+Only the **Seedance 1.0 Pro Fast** model is supported for video generation. Because this model is exclusively accessible through approved API providers, the `safetyLevel` parameter is automatically enforced at `high` and may be omitted in all requests.
+
+Video generation does not yet support NSFW scanning. The `safetyLevel` parameter is currently ignored and `results.[].isNSFW` will always return `null`. We plan to introduce full NSFW scanning support in the next API update.
+</Warning>

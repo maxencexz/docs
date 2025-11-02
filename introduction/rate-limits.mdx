@@ -1,0 +1,16 @@
+---
+title: "Rate Limits"
+description: "Learn about the rate limits for the MaxAI API."
+---
+
+Rate limits protect the service by capping how many requests can be made in a given time window. They keep the platform responsive for everyone, prevent noisy or buggy clients from impacting others, and reduce the chance of infrastructure overload. For developers this means predictable behavior: if you watch the provided headers and react to them, your integration will stay reliable and your users won't see interruptions.
+
+### How MaxAI handles rate limits
+When you use the MaxAI website or dashboard, traffic shaping and baseline protections are handled by Cloudflare. Cloudflare sits in front of our web routes, absorbs DDoS, mitigates bots, and applies per-IP/request protections so the UI remains fast and stable even under load.
+
+For API usage, enforcement is account-based, not key-based. If a single account has multiple API keys, every request made with any of those keys counts toward the same quota. Creating extra keys will not increase your rate limit. Limits scale with customer tier: each account has a base RPM and higher tiers receive exponentially higher allowances. If you exceed your rate limit, the API will return a `429 Too Many Requests` response.
+
+<Danger>Any attempt to circumvent rate limits by creating multiple accounts is a violation of our terms of service and may result in suspension of your accounts without any refund.</Danger>
+
+### How to read rate limit info
+Every API response includes headers you can use to understand your quota and adapt your client behavior. The `X-RateLimit-Limit` header shows the current requests-per-minute allowed for the account. `X-RateLimit-Remaining` tells you how many requests are left in the current window. `X-RateLimit-Reset` is the UTC epoch seconds when the window will reset. If you hit the quota, the response will be HTTP 429 and include a `Retry-After` header indicating how many seconds to wait.
