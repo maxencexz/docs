@@ -9,3 +9,21 @@ Only the **Seedance 1.0 Pro Fast** model is supported for video generation. Beca
 
 Video generation does not yet support NSFW scanning. The `safetyLevel` parameter is currently ignored and `results.[].isNSFW` will always return `null`. We plan to introduce full NSFW scanning support in the next API update.
 </Warning>
+
+<Note>
+### Aspect Ratios and Dimensions
+For video models, the `dimensions` parameter determines both the resolution of the video and the width x height in pixels. The exact pixel dimensions are defined by the combination of the chosen resolution and aspect ratio, so it's important to select an aspect ratio that is supported for the chosen resolution.
+
+<Accordion title="Allowed dimensions for 480p resolution">
+- `640x640` (1:1), `736x544` (4:3), `544x736` (3:4), `480x864` (9:16), `864x480` (16:9), `960x416` (21:9)
+</Accordion>
+
+<Accordion title="Allowed dimensions for 720p resolution">
+- `960x960` (1:1), `1120x832` (4:3), `832x1120` (3:4), `704x1248` (9:16), `1248x704` (16:9), `1504x640` (21:9)
+</Accordion>
+
+<Accordion title="Allowed dimensions for 1080p resolution">
+- `1440x1440` (1:1), `1664x1248` (4:3), `1248x1664` (3:4), `1088x1920` (9:16), `1920x1088` (16:9), `2176x928` (21:9)
+</Accordion>
+
+</Note>

@@ -774,13 +774,13 @@
                     "properties": {
                       "width": {
                         "type": "integer",
-                        "minimum": 12,
+                        "minimum": 128,
                         "maximum": 2048,
                         "description": "Width in pixels (multiple of 64). Defaults to 512."
                       },
                       "height": {
                         "type": "integer",
-                        "minimum": 12,
+                        "minimum": 128,
                         "maximum": 2048,
                         "description": "Height in pixels (multiple of 64). Defaults to 512."
                       },
@@ -1235,21 +1235,29 @@
                     "nullable": true,
                     "description": "Optional unique UUID v4 for the request. If not provided, a server-generated UUID will be assigned."
                   },
-                  "prompt": {
-                    "type": "string",
-                    "minLength": 2,
-                    "maxLength": 3000,
-                    "description": "Text description guiding the video generation. A value of `__BLANK__` lets the AI generate a video freely, without a specific prompt, allowing it to produce random or creative content of its choice."
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "positivePrompt", "dimensions"
+                    ],
+                    "properties": {
+                      "positivePrompt": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 3000,
+                        "description": "Text description guiding the image generation. A value of `__BLANK__` lets the AI generate an image freely, without a specific prompt, allowing it to produce random or creative content of its choice."
+                      },
+                      "frameImage": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "URL or base64/data URI of the image used as the starting point for the video."
+                      }
+                    }
                   },
                   "model": {
                     "type": "string",
                     "nullable": true,
-                    "description": "The model to use for video generation. Defaults to 'blackforestlabs@seedance-pro-fast'."
-                  },
-                  "frameImage": {
-                    "type": "string",
-                    "description": "URL or base64/data URI of the image used as the starting point for the video.",
-                    "nullable": true
+                    "description": "The model to use for video generation. Defaults to 'bytedance@seedance-pro-fast'."
                   },
                   "duration": {
                     "type": "integer",
@@ -1264,6 +1272,26 @@
                     "maximum": 9223372036854775807,
                     "nullable": true,
                     "description": "Random seed for reproducibility. If not provided, a random seed is generated."
+                  },
+                  "dimensions": {
+                    "type": "object",
+                    "required": [
+                      "width", "height"
+                    ],
+                    "properties": {
+                      "width": {
+                        "type": "integer",
+                        "minimum": 416,
+                        "maximum": 2048,
+                        "description": "Width in pixels. Defaults to 640."
+                      },
+                      "height": {
+                        "type": "integer",
+                        "minimum": 416,
+                        "maximum": 2048,
+                        "description": "Height in pixels. Defaults to 640."
+                      }
+                    }
                   }
                 },
                 "required": ["prompt", "duration"]
